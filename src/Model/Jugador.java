@@ -1,23 +1,25 @@
 package Model;
 
 import java.sql.Date;
-public class Players {
+public class Jugador {
     private int jugadorId;
     private String nom;
     private String cognom;
     private Date dataNaixement;
     private String alcada;
     private String pes;
+    private String dorsal;
     private String posicio;
     private int equipId;
 
-    public Players(int jugadorId, String nom, String cognom, Date dataNaixement, String alcada, String pes, String posicio, int equipId) {
+    public Jugador(int jugadorId, String nom, String cognom, Date dataNaixement, String alcada, String pes,String dorsal, String posicio, int equipId) {
         this.jugadorId = jugadorId;
         this.nom = nom;
         this.cognom = cognom;
         this.dataNaixement = dataNaixement;
         this.alcada = alcada;
         this.pes = pes;
+        this.dorsal = dorsal;
         this.posicio = posicio;
         this.equipId = equipId;
     }
@@ -68,6 +70,14 @@ public class Players {
 
     public void setPes(String pes) {
         this.pes = pes;
+    }
+
+    public String getDorsal() {
+        return dorsal;
+    }
+
+    public void setDorsal(String dorsal) {
+        this.dorsal = dorsal;
     }
 
     public String getPosicio() {
