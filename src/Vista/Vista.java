@@ -17,11 +17,4 @@ public class Vista {
         System.out.println("9. Canviar nom franquícia d'un equip");
         System.out.println("0. Sortir");
     }
-
-    public static void llistarJugadorsEquip(List<Jugador> players){
-        for (Jugador player : players) {
-            System.out.println(player.getNom());
-        }
-    }
-
 }
