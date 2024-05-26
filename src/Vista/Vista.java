@@ -1,8 +1,5 @@
 package Vista;
 
-import Model.Jugador;
-import java.util.List;
-
 public class Vista {
     public static void menuInicial(){
         System.out.println("------ MENÚ ------");

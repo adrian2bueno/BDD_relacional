@@ -12,26 +12,20 @@ import java.util.Set;
 
 public class TeamsDAO implements DAOGenerica<Teams, Integer> {
     @Override
-    public Teams findbyId(Integer integer) {
-        return null;
-    }
-
-    @Override
     public boolean insert(Teams team) {
         Connection conexio = null;
         PreparedStatement pstmt = null;
-        String sql = "INSERT INTO equips (id, ciutat, nom, acronim, divisio, guanyades, perdudes) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO teams (ciutat, nom, acronim, divisio, guanyades, perdudes) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try {
             conexio = DatabaseConnection.getConnection();
             pstmt = conexio.prepareStatement(sql);
 
-            pstmt.setInt(1, team.getIdEquip());
-            pstmt.setString(2, team.getCiutat());
-            pstmt.setString(3, team.getNom());
-            pstmt.setString(4, team.getAcronim());
-            pstmt.setString(5, team.getDivisio());
-            pstmt.setInt(6, team.getGuanyades());
-            pstmt.setInt(7, team.getPerdudes());
+            pstmt.setString(1, team.getCiutat());
+            pstmt.setString(2, team.getNom());
+            pstmt.setString(3, team.getAcronim());
+            pstmt.setString(4, team.getDivisio());
+            pstmt.setInt(5, team.getGuanyades());
+            pstmt.setInt(6,team.getPerdudes());
 
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -56,19 +50,18 @@ public class TeamsDAO implements DAOGenerica<Teams, Integer> {
     public boolean update(Teams team) {
         Connection conexio = null;
         PreparedStatement pstmt = null;
-        String sql = "UPDATE equips SET id = ?, ciutat = ?, nom = ?, acronim = ?, divisio = ?, guanyades = ?, perdudes = ? WHERE equip_id = ?";
+        String sql = "UPDATE teams SET ciutat = ?, nom = ?, acronim = ?, divisio = ?, guanyades = ?, perdudes = ? WHERE equip_id = ?";
         try  {
             conexio = DatabaseConnection.getConnection();
             pstmt = conexio.prepareStatement(sql);
 
-            pstmt.setInt(1, team.getIdEquip());
-            pstmt.setString(2, team.getCiutat());
-            pstmt.setString(3, team.getNom());
-            pstmt.setString(4, team.getAcronim());
-            pstmt.setString(5, team.getDivisio());
-            pstmt.setInt(6, team.getGuanyades()); // Modifiqué setBoolean a setInt
-            pstmt.setInt(7, team.getPerdudes());  // Modifiqué setBoolean a setInt
-            pstmt.setInt(8, team.getIdEquip()); // Ajusté el índice de los parámetros
+            pstmt.setString(1, team.getCiutat());
+            pstmt.setString(2, team.getNom());
+            pstmt.setString(3, team.getAcronim());
+            pstmt.setString(4, team.getDivisio());
+            pstmt.setInt(5, team.getGuanyades());
+            pstmt.setInt(6,team.getPerdudes());
+            pstmt.setInt(7, team.getIdEquip());
 
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -91,7 +84,7 @@ public class TeamsDAO implements DAOGenerica<Teams, Integer> {
     public boolean delete(Integer equip_id) {
         Connection conexio = null;
         PreparedStatement pstmt = null;
-        String sql = "DELETE FROM equips WHERE id = ?";
+        String sql = "DELETE FROM teams WHERE id = ?";
         try {
             conexio = DatabaseConnection.getConnection();
             pstmt = conexio.prepareStatement(sql);
@@ -114,11 +107,14 @@ public class TeamsDAO implements DAOGenerica<Teams, Integer> {
         }
     }
 
+    @Override
+    public Teams findbyId(Integer integer) {
+        return null;
+    }
     public int count() throws SQLException {
         Connection conn = DatabaseConnection.getConnection();
-        PreparedStatement pstmt = conn.prepareStatement(
-                "SELECT COUNT(*) FROM equips"
-        );
+        String sql = "SELECT COUNT(*) FROM teams";
+        PreparedStatement pstmt = conn.prepareStatement(sql);
 
         ResultSet rss = pstmt.executeQuery();
         rss.next();
@@ -129,9 +125,8 @@ public class TeamsDAO implements DAOGenerica<Teams, Integer> {
     //1 Llistar tots els jugadors d'un equip
     public List<Players> obtenirJugadors(String nomEquip) throws Exception {
         Connection connexio = DatabaseConnection.getConnection();
-        PreparedStatement sentenciaJugadors = connexio.prepareStatement(
-                "SELECT j.jugador_id,CONCAT(e.ciutat,' ',e.nom) AS nom_equip FROM jugadors j INNER JOIN equips e ON j.equip_id = e.equip_id HAVING nom_equip = ?"
-        );
+        String sql ="SELECT j.jugador_id,CONCAT(e.ciutat,' ',e.nom) AS nom_equip FROM players j INNER JOIN teams e ON j.equip_id = e.equip_id HAVING nom_equip = ?";
+        PreparedStatement sentenciaJugadors = connexio.prepareStatement(sql);
 
         sentenciaJugadors.setString(1, nomEquip);
         ResultSet rsJugadors = sentenciaJugadors.executeQuery();
@@ -156,7 +151,7 @@ public class TeamsDAO implements DAOGenerica<Teams, Integer> {
     public int cercarIdPerNom(String nomEquip) throws SQLException {
         Connection connexio = DatabaseConnection.getConnection();
         PreparedStatement sentencia = connexio.prepareStatement(
-                "SELECT equip_id,CONCAT(ciutat,' ',nom) AS nom_equip FROM equips HAVING nom_equip = ?"
+                "SELECT equip_id,CONCAT(ciutat,' ',nom) AS nom_equip FROM teams HAVING nom_equip = ?"
         );
 
         sentencia.setString(1,nomEquip);
