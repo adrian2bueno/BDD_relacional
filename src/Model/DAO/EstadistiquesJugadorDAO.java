@@ -1,20 +1,19 @@
 package Model.DAO;
 
 import Model.DatabaseConnection;
-import Model.EstadistiquesJugador;
-import Model.Jugador;
+import Model.PlayerStats;
 
 import java.sql.*;
 import java.util.List;
 
-public class EstadistiquesJugadorDAO implements DAOGenerica<EstadistiquesJugador, Integer> {
+public class EstadistiquesJugadorDAO implements DAOGenerica<PlayerStats, Integer> {
     @Override
-    public EstadistiquesJugador findbyId(Integer o) {
+    public PlayerStats findbyId(Integer o) {
         return null;
     }
 
     @Override
-    public boolean insert(EstadistiquesJugador estJugador) {
+    public boolean insert(PlayerStats estJugador) {
         Connection conexio = null;
         PreparedStatement pstmt = null;
         String sql = "INSERT INTO estadistiques_jugadors (jugador_id,equip_id,partit_id,minuts_jugats,punts,tirs_anotats,tirs_tirats,tirs_triples_antotats,tirs_triples_tirats,tirs_lliures_anotats,tirs_lliures_tirats,rebots_ofensius,rebots_defensius,assistencies,robades,bloqueigs) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -58,7 +57,7 @@ public class EstadistiquesJugadorDAO implements DAOGenerica<EstadistiquesJugador
     }
 
     @Override
-    public boolean update(EstadistiquesJugador estJugador) {
+    public boolean update(PlayerStats estJugador) {
         Connection conexio = null;
         PreparedStatement pstmt = null;
         String sql = "UPDATE estadistiques_jugadors SET equip_id=?,partit_id=?,minuts_jugats=?,punts=?,tirs_anotats=?,tirs_tirats=?,tirs_triples_antotats=?,tirs_triples_tirats=?,tirs_lliures_anotats=?,tirs_lliures_tirats=?,rebots_ofensius=?,rebots_defensius=?,assistencies=?,robades=?,bloqueigs=? WHERE jugador_id=?";

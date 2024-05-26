@@ -1,12 +1,14 @@
 package Model.DAO;
 
 import Model.DatabaseConnection;
-import Model.Jugador;
+import Model.Players;
 import Model.Teams;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class TeamsDAO implements DAOGenerica<Teams, Integer> {
     @Override
@@ -125,7 +127,7 @@ public class TeamsDAO implements DAOGenerica<Teams, Integer> {
     }
 
     //1 Llistar tots els jugadors d'un equip
-    public List<Jugador> obtenirJugadors(String nomEquip) throws Exception {
+    public List<Players> obtenirJugadors(String nomEquip) throws Exception {
         Connection connexio = DatabaseConnection.getConnection();
         PreparedStatement sentenciaJugadors = connexio.prepareStatement(
                 "SELECT j.jugador_id,CONCAT(e.ciutat,' ',e.nom) AS nom_equip FROM jugadors j INNER JOIN equips e ON j.equip_id = e.equip_id HAVING nom_equip = ?"
@@ -134,26 +136,45 @@ public class TeamsDAO implements DAOGenerica<Teams, Integer> {
         sentenciaJugadors.setString(1, nomEquip);
         ResultSet rsJugadors = sentenciaJugadors.executeQuery();
 
-        List<Jugador> llistaJugadors;
+        List<Players> llistaPlayers;
 
         if (rsJugadors.next()) {
-            llistaJugadors = new ArrayList<>();
-            JugadorDAO jugadorDAO = new JugadorDAO();
+            llistaPlayers = new ArrayList<>();
+            PlayerDAO playerDAO = new PlayerDAO();
 
             while (rsJugadors.next()) {
-                llistaJugadors.add(jugadorDAO.cercar(rsJugadors.getInt("jugador_id")));
+                llistaPlayers.add(playerDAO.cercar(rsJugadors.getInt("jugador_id")));
             }
         } else {
             throw new Exception("Equip no trobat");
         }
 
-        return llistaJugadors;
+        return llistaPlayers;
 
     }
 
+    public int cercarIdPerNom(String nomEquip) throws SQLException {
+        Connection connexio = DatabaseConnection.getConnection();
+        PreparedStatement sentencia = connexio.prepareStatement(
+                "SELECT equip_id,CONCAT(ciutat,' ',nom) AS nom_equip FROM equips HAVING nom_equip = ?"
+        );
+
+        sentencia.setString(1,nomEquip);
+        ResultSet rsEquip = sentencia.executeQuery();
+
+        if (rsEquip.next()) {
+            int equipId = rsEquip.getInt("equip_id");
+            return equipId;
+        } else {
+            return 0;
+        }
+    }
     @Override
     public List<Teams> findAll() {
         return null;
     }
 
+    public List<Set<Map.Entry<String, Integer>>> obtenirResultatPartits(String equipNom) {
+        return null;
+    }
 }

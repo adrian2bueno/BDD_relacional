@@ -1,7 +1,7 @@
 package Model;
 
 public class Teams {
-    private int id;
+    private int equipId;
     private String ciutat;
     private String nom;
     private String acronim;
@@ -10,7 +10,7 @@ public class Teams {
     private int perdudes;
 
     public Teams(String ciutat, String nom, String acronim, String divisio, int guanyades, int perdudes) {
-        this.id = 0;
+        this.equipId = 0;
         this.ciutat = ciutat;
         this.nom = nom;
         this.acronim = acronim;
@@ -19,12 +19,12 @@ public class Teams {
         this.perdudes = perdudes;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setEquipId(int equipId) {
+        this.equipId = equipId;
     }
 
     public int getIdEquip() {
-        return id;
+        return equipId;
     }
 
     public String getCiutat() {

@@ -1,22 +1,23 @@
 package Model.DAO;
 
 import Model.DatabaseConnection;
-import Model.Jugador;
+import Model.Players;
 
 import java.sql.*;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 //TODO: Falta doRsal en TODO MENOS FINDBYID
-public class JugadorDAO implements DAOGenerica<Jugador, Integer> {
+public class PlayerDAO implements DAOGenerica<Players, Integer> {
     @Override
-    public Jugador findbyId(Integer jugadorId) {
+    public Players findbyId(Integer jugadorId) {
         String sql = "SELECT * FROM jugadors WHERE jugador_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, jugadorId);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                return new Jugador(
+                return new Players(
                         rs.getInt("jugador_id"),
                         rs.getString("nom"),
                         rs.getString("cognom"),
@@ -35,7 +36,7 @@ public class JugadorDAO implements DAOGenerica<Jugador, Integer> {
     }
 
     @Override
-    public boolean insert(Jugador jugador) {
+    public boolean insert(Players players) {
         Connection conexio = null;
         PreparedStatement pstmt = null;
         String sql = "INSERT INTO jugadors (jugador_id, nom, cognom, data_naixement, alcada, pes, posicio, equip_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -43,14 +44,14 @@ public class JugadorDAO implements DAOGenerica<Jugador, Integer> {
             conexio = DatabaseConnection.getConnection();
             pstmt = conexio.prepareStatement(sql);
 
-            pstmt.setInt(1, jugador.getJugadorId());
-            pstmt.setString(2, jugador.getNom());
-            pstmt.setString(3, jugador.getCognom());
-            pstmt.setDate(4, new Date(jugador.getDataNaixement().getTime()));
-            pstmt.setString(5, jugador.getAlcada());
-            pstmt.setString(6, jugador.getPes());
-            pstmt.setString(7, jugador.getPosicio());
-            pstmt.setInt(8, jugador.getEquipId());
+            pstmt.setInt(1, players.getJugadorId());
+            pstmt.setString(2, players.getNom());
+            pstmt.setString(3, players.getCognom());
+            pstmt.setDate(4, new Date(players.getDataNaixement().getTime()));
+            pstmt.setString(5, players.getAlcada());
+            pstmt.setString(6, players.getPes());
+            pstmt.setString(7, players.getPosicio());
+            pstmt.setInt(8, players.getEquipId());
 
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -71,7 +72,7 @@ public class JugadorDAO implements DAOGenerica<Jugador, Integer> {
     }
 
     @Override
-    public boolean update(Jugador players) {
+    public boolean update(Players players) {
         Connection conexio = null;
         PreparedStatement pstmt = null;
         String sql = "UPDATE jugadors SET nom = ?, cognom = ?, data_naixement = ?, alcada = ?, pes = ?, posicio = ?, equip_id = ? WHERE jugador_id = ?";
@@ -144,7 +145,7 @@ public class JugadorDAO implements DAOGenerica<Jugador, Integer> {
 
         return rss.getInt(1);
     }
-    public Jugador cercar(int id) throws SQLException {
+    public Players cercar(int id) throws SQLException {
         Connection connexio = DatabaseConnection.getConnection();
         PreparedStatement sentencia = connexio.prepareStatement(
                 "SELECT * FROM jugadors WHERE jugador_id = ?"
@@ -154,7 +155,7 @@ public class JugadorDAO implements DAOGenerica<Jugador, Integer> {
         ResultSet rsJugador = sentencia.executeQuery();
 
         if (rsJugador.next()) {
-            Jugador jugador = new Jugador(
+            Players players = new Players(
                     rsJugador.getInt("jugadorId"),
                     rsJugador.getString("nom"),
                     rsJugador.getString("cognom"),
@@ -165,17 +166,34 @@ public class JugadorDAO implements DAOGenerica<Jugador, Integer> {
                     rsJugador.getString("posicio"),
                     rsJugador.getInt("equip_id"));
 
-            jugador.setJugadorId(rsJugador.getInt("jugador_id"));
-            return jugador;
+            players.setJugadorId(rsJugador.getInt("jugador_id"));
+            return players;
         } else {
             return null;
         }
     }
+    public int cercarIdPerNom(String nomComplet) throws SQLException {
+        Connection connexio = DatabaseConnection.getConnection();
+        PreparedStatement sentencia = connexio.prepareStatement(
+                "SELECT jugador_id,CONCAT(nom,' ',cognom) AS nom_complet FROM jugadors HAVING nom_complet = ?"
+        );
 
+        sentencia.setString(1,nomComplet);
+        ResultSet rsJugador = sentencia.executeQuery();
+
+        if (rsJugador.next()) {
+            return rsJugador.getInt("jugador_id");
+        } else {
+            return 0;
+        }
+    }
 
     @Override
-    public List<Jugador> findAll() {
+    public List<Players> findAll() {
         return null;
     }
 
+    public LinkedHashMap<String, Float> calcularMitjana(String jugadorNom) {
+        return null;
+    }
 }
